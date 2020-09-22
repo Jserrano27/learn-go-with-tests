@@ -21,14 +21,21 @@ func TestSum(t *testing.T) {
 }
 
 func TestSumAll(t *testing.T) {
+
+	checkSums := func(t *testing.T, got []int, expected []int) {
+		t.Helper()
+
+		if !reflect.DeepEqual(got, expected) {
+			t.Errorf("Expected %v, but got %v instead", expected, got)
+		}
+	}
+
 	t.Run("with two slices", func(t *testing.T) {
 
 		got := SumAll([]int{1, 2, 3}, []int{1, 0, 1})
 		expected := []int{6, 2}
 
-		if !reflect.DeepEqual(got, expected) {
-			t.Errorf("Expected %v, but got %v instead", expected, got)
-		}
+		checkSums(t, got, expected)
 	})
 
 	t.Run("with a single slice", func(t *testing.T) {
@@ -37,9 +44,50 @@ func TestSumAll(t *testing.T) {
 		got := SumAll(numbers)
 		expected := []int{10}
 
+		checkSums(t, got, expected)
+	})
+
+	t.Run("with an empty slice", func(t *testing.T) {
+		got := SumAll([]int{})
+		expected := []int{0}
+
+		checkSums(t, got, expected)
+	})
+}
+
+func TestSumAllTails(t *testing.T) {
+
+	checkSums := func(t *testing.T, got []int, expected []int) {
+		t.Helper()
+
 		if !reflect.DeepEqual(got, expected) {
 			t.Errorf("Expected %v, but got %v instead", expected, got)
 		}
+	}
+
+	t.Run("with two slices", func(t *testing.T) {
+
+		got := SumAllTails([]int{1, 2, 3, 4}, []int{0, 1, 1})
+		expected := []int{9, 2}
+
+		checkSums(t, got, expected)
+	})
+
+	t.Run("with a single slice", func(t *testing.T) {
+		numbers := []int{2, 5}
+
+		got := SumAllTails(numbers)
+		expected := []int{5}
+
+		checkSums(t, got, expected)
+	})
+
+	t.Run("with an empty slice", func(t *testing.T) {
+
+		got := SumAllTails([]int{}, []int{0, 1, 1})
+		expected := []int{0, 2}
+
+		checkSums(t, got, expected)
 	})
 }
 
