@@ -11,24 +11,41 @@ type Sleeper interface {
 	Sleep()
 }
 
-type SpySleeper struct {
-	Calls int
+type CountdownOperationsSpy struct {
+	Calls []string
 }
 
-func (s *SpySleeper) Sleep() {
-	s.Calls++
+func (c *CountdownOperationsSpy) Sleep() {
+	c.Calls = append(c.Calls, sleepAction)
 }
 
-type DefaultSleeper struct{}
+func (c *CountdownOperationsSpy) Write(w []byte) (n int, err error) {
+	c.Calls = append(c.Calls, writeAction)
+	return
+}
 
-func (d DefaultSleeper) Sleep() {
-	time.Sleep(countdownInterval)
+type ConfigurableSleeper struct {
+	duration time.Duration
+	sleep    func(time.Duration)
+}
+
+func (c *ConfigurableSleeper) Sleep() {
+	c.sleep(c.duration)
+}
+
+type SpyTime struct {
+	durationSlept time.Duration
+}
+
+func (s *SpyTime) Sleep(duration time.Duration) {
+	s.durationSlept = duration
 }
 
 const (
-	countdownStart    = 3
-	countdownInterval = 1 * time.Second
-	finalWord         = "Go!"
+	countdownStart = 3
+	finalWord      = "Go!"
+	writeAction    = "write"
+	sleepAction    = "sleep"
 )
 
 func Countdown(w io.Writer, s Sleeper) {
@@ -41,6 +58,7 @@ func Countdown(w io.Writer, s Sleeper) {
 }
 
 func main() {
-	s := &DefaultSleeper{}
-	Countdown(os.Stdout, s)
+	interval := 1 * time.Second
+	sleeper := &ConfigurableSleeper{interval, time.Sleep}
+	Countdown(os.Stdout, sleeper)
 }
