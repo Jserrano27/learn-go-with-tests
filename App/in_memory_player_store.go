@@ -27,3 +27,14 @@ func (i *InMemoryPlayerStore) recordWin(player string) {
 
 	i.store[player]++
 }
+
+func (i *InMemoryPlayerStore) getLeague() []Player {
+	i.mu.Lock()
+	defer i.mu.Unlock()
+
+	league := []Player{
+		{"Chris", 20},
+	}
+
+	return league
+}
