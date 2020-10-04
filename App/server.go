@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"net/http"
 	"strings"
 )
@@ -12,29 +11,12 @@ type PlayerStore interface {
 	recordWin(player string)
 }
 
-type InMemoryPlayerStore struct {
-	store map[string]int
-}
-
-func NewInMemoryPlayerStore() *InMemoryPlayerStore {
-	return &InMemoryPlayerStore{map[string]int{}}
-}
-
-func (i *InMemoryPlayerStore) getPlayerScore(player string) int {
-	return i.store[player]
-}
-
-func (i *InMemoryPlayerStore) recordWin(player string) {
-	i.store[player]++
-}
-
 type PlayerServer struct {
 	store PlayerStore
 }
 
 func (p *PlayerServer) ServeHTTP(res http.ResponseWriter, req *http.Request) {
 	player := strings.TrimPrefix(req.URL.Path, "/players/")
-	log.Println(player)
 
 	switch req.Method {
 	case http.MethodPost:
