@@ -1,6 +1,8 @@
 package main
 
-import "sync"
+import (
+	"sync"
+)
 
 type InMemoryPlayerStore struct {
 	mu    sync.Mutex
@@ -32,8 +34,10 @@ func (i *InMemoryPlayerStore) getLeague() []Player {
 	i.mu.Lock()
 	defer i.mu.Unlock()
 
-	league := []Player{
-		{"Chris", 20},
+	var league []Player
+
+	for name, wins := range i.store {
+		league = append(league, Player{name, wins})
 	}
 
 	return league

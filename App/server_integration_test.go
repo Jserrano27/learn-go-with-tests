@@ -1,6 +1,7 @@
 package main
 
 import (
+	"net/http"
 	"net/http/httptest"
 	"testing"
 )
@@ -14,12 +15,28 @@ func TestRecordingWinsAndRetrievingThem(t *testing.T) {
 	server.ServeHTTP(httptest.NewRecorder(), newPostWinRequest(player))
 	server.ServeHTTP(httptest.NewRecorder(), newPostWinRequest(player))
 
-	response := httptest.NewRecorder()
+	t.Run("get score", func(t *testing.T) {
+		response := httptest.NewRecorder()
 
-	server.ServeHTTP(response, newGetScoreRequest(player))
+		server.ServeHTTP(response, newGetScoreRequest(player))
 
-	got := response.Body.String()
-	want := "3"
+		got := response.Body.String()
+		want := "3"
 
-	assertResponseBody(t, got, want)
+		assertResponseBody(t, got, want)
+	})
+
+	t.Run("get league", func(t *testing.T) {
+		response := httptest.NewRecorder()
+		server.ServeHTTP(response, newGetLeagueRequest())
+		assertStatusCode(t, response.Code, http.StatusOK)
+
+		got := getLeagueFromResponse(t, response.Body)
+		want := []Player{
+			{"Jhon", 3},
+		}
+
+		assertLeague(t, got, want)
+	})
+
 }
