@@ -30,7 +30,7 @@ func (i *InMemoryPlayerStore) recordWin(player string) {
 	i.store[player]++
 }
 
-func (i *InMemoryPlayerStore) getLeague() []Player {
+func (i *InMemoryPlayerStore) getLeague() League {
 	i.mu.Lock()
 	defer i.mu.Unlock()
 

@@ -11,7 +11,7 @@ import (
 type PlayerStore interface {
 	getPlayerScore(player string) int
 	recordWin(player string)
-	getLeague() []Player
+	getLeague() League
 }
 
 // Player stores a name with a number of wins
