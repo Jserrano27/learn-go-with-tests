@@ -25,5 +25,6 @@ func (l League) Find(name string) *Player {
 			return &l[i]
 		}
 	}
+
 	return nil
 }
