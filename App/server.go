@@ -7,22 +7,26 @@ import (
 	"strings"
 )
 
+// PlayerStore stores score information about players
 type PlayerStore interface {
 	getPlayerScore(player string) int
 	recordWin(player string)
 	getLeague() []Player
 }
 
+// Player stores a name with a number of wins
 type Player struct {
 	Name string
 	Wins int
 }
 
+// PlayerServer is a HTTP interface for player information
 type PlayerServer struct {
 	store PlayerStore
 	http.Handler
 }
 
+// NewPlayerServer creates a PlayerServer with routing configured
 func NewPlayerServer(store PlayerStore) *PlayerServer {
 	p := new(PlayerServer)
 
