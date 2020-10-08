@@ -3,29 +3,6 @@ package main
 import "testing"
 
 func TestFileSystemStore(t *testing.T) {
-
-	t.Run("/league from a reader", func(t *testing.T) {
-		database, cleanDatabase := createTempFile(t, `[
-			{"Name": "Cleo", "Wins": 10},
-			{"Name": "Chris", "Wins": 32}]`)
-
-		defer cleanDatabase()
-
-		store, err := NewFileSystemPlayerStore(database)
-		assertNoError(t, err)
-
-		got := store.getLeague()
-		want := []Player{
-			{"Cleo", 10},
-			{"Chris", 32},
-		}
-
-		// read again
-		got = store.getLeague()
-
-		assertLeague(t, got, want)
-	})
-
 	t.Run("/get player score", func(t *testing.T) {
 		database, cleanDatabase := createTempFile(t, `[
 			{"Name": "Cleo", "Wins": 10},
@@ -81,6 +58,29 @@ func TestFileSystemStore(t *testing.T) {
 
 		_, err := NewFileSystemPlayerStore(database)
 		assertNoError(t, err)
+	})
+
+	t.Run("sort league by score", func(t *testing.T) {
+		database, cleanDatabase := createTempFile(t, `[
+			{"Name": "Cleo", "Wins": 10},
+			{"Name": "Chris", "Wins": 32}]`)
+
+		defer cleanDatabase()
+
+		store, err := NewFileSystemPlayerStore(database)
+		assertNoError(t, err)
+
+		got := store.getLeague()
+		want := []Player{
+			{"Chris", 32},
+			{"Cleo", 10},
+		}
+
+		assertLeague(t, got, want)
+
+		// read again
+		got = store.getLeague()
+		assertLeague(t, got, want)
 	})
 }
 
