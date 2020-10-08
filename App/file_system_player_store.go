@@ -12,16 +12,10 @@ type FileSystemPlayerStore struct {
 }
 
 func NewFileSystemPlayerStore(file *os.File) (*FileSystemPlayerStore, error) {
-	file.Seek(0, 0)
+	err := initialisePlayerDBFile(file)
 
-	info, err := file.Stat()
 	if err != nil {
-		return nil, fmt.Errorf("problem reading file info from file %s, %v", file.Name(), err)
-	}
-
-	if info.Size() == 0 {
-		file.Write([]byte(`[]`))
-		file.Seek(0, 0)
+		return nil, fmt.Errorf("error initializing player db file, %v", err)
 	}
 
 	league, err := NewLeague(file)
@@ -60,4 +54,21 @@ func (f *FileSystemPlayerStore) recordWin(name string) {
 
 func (f *FileSystemPlayerStore) getLeague() League {
 	return f.league
+}
+
+func initialisePlayerDBFile(file *os.File) error {
+	file.Seek(0, 0)
+
+	info, err := file.Stat()
+
+	if err != nil {
+		return fmt.Errorf("problem reading file info from file %s, %v", file.Name(), err)
+	}
+
+	if info.Size() == 0 {
+		file.Write([]byte(`[]`))
+		file.Seek(0, 0)
+	}
+
+	return nil
 }
