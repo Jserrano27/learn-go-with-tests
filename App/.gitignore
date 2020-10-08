@@ -1,2 +1,3 @@
 App
-game.db.json
+/cmd/webserver/webserver
+/cmd/webserver/game.db.json

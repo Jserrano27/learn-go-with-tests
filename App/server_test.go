@@ -1,4 +1,4 @@
-package main
+package poker
 
 import (
 	"fmt"
@@ -96,14 +96,7 @@ func TestStoreWins(t *testing.T) {
 		server.ServeHTTP(response, request)
 
 		assertStatusCode(t, response.Code, http.StatusAccepted)
-
-		if len(store.winCalls) != 1 {
-			t.Errorf("got %d calls to RecordWin want %d", len(store.winCalls), 1)
-		}
-
-		if store.winCalls[0] != player {
-			t.Errorf("Did not store correct winner. Got %q, want %q", store.winCalls[0], player)
-		}
+		assertPlayerWin(t, &store, player)
 	})
 }
 
@@ -169,6 +162,16 @@ func assertResponseBody(t *testing.T, got, want string) {
 	t.Helper()
 	if got != want {
 		t.Errorf("Got %q but want %q", got, want)
+	}
+}
+
+func assertPlayerWin(t *testing.T, store *StubPlayerStore, name string) {
+	if len(store.winCalls) != 1 {
+		t.Errorf("got %d calls to RecordWin want %d", len(store.winCalls), 1)
+	}
+
+	if store.winCalls[0] != name {
+		t.Errorf("Did not store correct winner. Got %q, want %q", store.winCalls[0], name)
 	}
 }
 
