@@ -4,7 +4,7 @@ import "testing"
 
 func TestFileSystemStore(t *testing.T) {
 	t.Run("/get player score", func(t *testing.T) {
-		database, cleanDatabase := createTempFile(t, `[
+		database, cleanDatabase := CreateTempFile(t, `[
 			{"Name": "Cleo", "Wins": 10},
 			{"Name": "Chris", "Wins": 32}]`)
 
@@ -19,7 +19,7 @@ func TestFileSystemStore(t *testing.T) {
 	})
 
 	t.Run("store wins for existing players", func(t *testing.T) {
-		database, cleanDatabase := createTempFile(t, `[
+		database, cleanDatabase := CreateTempFile(t, `[
 			{"Name": "Cleo", "Wins": 10},
 			{"Name": "Chris", "Wins": 32}]`)
 
@@ -36,7 +36,7 @@ func TestFileSystemStore(t *testing.T) {
 	})
 
 	t.Run("store wins for new players", func(t *testing.T) {
-		database, cleanDatabase := createTempFile(t, `[
+		database, cleanDatabase := CreateTempFile(t, `[
 			{"Name": "Cleo", "Wins": 10},
 			{"Name": "Chris", "Wins": 32}]`)
 
@@ -53,7 +53,7 @@ func TestFileSystemStore(t *testing.T) {
 	})
 
 	t.Run("works with an empty file", func(t *testing.T) {
-		database, cleanDatabase := createTempFile(t, ``)
+		database, cleanDatabase := CreateTempFile(t, ``)
 		defer cleanDatabase()
 
 		_, err := NewFileSystemPlayerStore(database)
@@ -61,7 +61,7 @@ func TestFileSystemStore(t *testing.T) {
 	})
 
 	t.Run("sort league by score", func(t *testing.T) {
-		database, cleanDatabase := createTempFile(t, `[
+		database, cleanDatabase := CreateTempFile(t, `[
 			{"Name": "Cleo", "Wins": 10},
 			{"Name": "Chris", "Wins": 32}]`)
 
@@ -76,11 +76,11 @@ func TestFileSystemStore(t *testing.T) {
 			{"Cleo", 10},
 		}
 
-		assertLeague(t, got, want)
+		AssertLeague(t, got, want)
 
 		// read again
 		got = store.getLeague()
-		assertLeague(t, got, want)
+		AssertLeague(t, got, want)
 	})
 }
 
